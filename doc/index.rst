@@ -14,6 +14,7 @@ Contents:
    introduction.rst
    auto_examples/index.rst
    tutorials/index.rst
+   interfaces/index.rst
    reference.rst
 
 
