@@ -20,7 +20,7 @@ from procasl import preprocessing, quantification, datasets, _utils
 subjects_parent_directory = os.path.join(os.path.expanduser('~/procasl_data'),
                                          'heroes')
 heroes = datasets.load_heroes_dataset(
-    subjects=(0, 1),
+    subjects=(0, 1, 2),
     subjects_parent_directory=subjects_parent_directory,
     paths_patterns={'anat': 't1mri/acquisition1/anat*.nii',
                     'basal ASL': 'fMRI/acquisition1/basal_rawASL*.nii'})
@@ -141,6 +141,6 @@ for (func_file, anat_file) in zip(
         cbf_map,
         bg_img='/usr/share/fsl/5.0/data/standard/MNI152_T1_2mm.nii.gz',
         threshold=.1, vmax=150.,
-        display_mode='z')
+        display_mode='z', cut_coords = (15, 45, 60,))
     plt.show()
 os.chdir(current_directory)
