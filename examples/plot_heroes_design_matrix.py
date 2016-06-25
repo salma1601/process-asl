@@ -56,6 +56,7 @@ onsets = [paradigm['onset'][paradigm['name'] == condition].tolist()
           for condition in conditions]
 durations = [paradigm['duration'][paradigm['name'] == condition].tolist()
              for condition in conditions]
+amplitude = np.ones(len(paradigm['duration'][paradigm['name'] == condition]))
 modelspec.inputs.subject_info = Bunch(conditions=conditions, onsets=onsets,
                                       durations=durations)
 out_modelspec = modelspec.run()
@@ -68,7 +69,7 @@ if os.path.isfile(spm_mat):
     os.remove(spm_mat)  # design crashes if existant SPM.mat
 
 level1design = Level1Design(bases={'hrf': {'derivs': [0, 0]}},
-                            perfusion_bases='bases',
+#                            perfusion_bases='bases',
                             timing_units='secs',
                             interscan_interval=tr,
                             model_serial_correlations='AR(1)')

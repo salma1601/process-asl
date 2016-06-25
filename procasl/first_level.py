@@ -239,6 +239,7 @@ class Level1Design(BaseInterface):
         level1design.inputs.mask_threshold = self.inputs.mask_threshold
         level1design.inputs.model_serial_correlations = \
             self.inputs.model_serial_correlations
+        out_level1design = level1design.run()
         perfusion_bases = self.inputs.perfusion_bases
         if isdefined(perfusion_bases) and perfusion_bases != 'none':
             # Compute perfusion regressors
@@ -262,6 +263,23 @@ class Level1Design(BaseInterface):
                     hrf_model.extend(' + derivative + dispersion')
             else:
                 raise ValueError('physio PRF not implemented yet')
+            # Duplicate conditions
+            perfusion_conditions = []
+            for c in session_info['cond']:
+                c['name'] = 'perfusion_' + c['name']
+                perfusion_conditions.append(c)
+            c['name'] = 'perfusion_baseline_' + c['name']
+            perfusion_conditions.append(c)
+            session_info['cond'].extend(perfusion_conditions)
+            level1design.inputs.session_info = [session_info]
+
+            # Add perfusion regressors to SPM.mat file
+            from scipy.io import loadmat
+            spm_mat_struct = loadmat(out_level1design.outputs.spm_mat_file,
+                                     struct_as_record=False, squeeze_me=True)['SPM']
+            design_matrix = spm_mat_struct.xX.X
+            regressor_names = spm_mat_struct.xX.name
+
             condition_names = [c['name'] for c in session_info['cond']]  # robustify
             onsets = [c['onset'] for c in session_info['cond']]
             durations = [c['duration'] for c in session_info['cond']]
@@ -269,19 +287,19 @@ class Level1Design(BaseInterface):
                 amplitudes = [c['amplitude'] for c in session_info['cond']]
             else:
                 amplitudes = [1 for c in session_info['cond']]
-
+    
             conditions = zip(onsets, durations, amplitudes)
             perfusion_regressors, perfusion_regressor_names = \
                 compute_perfusion_regressors(conditions, condition_names,
                                              hrf_model, frametimes)
-            # Add perfusion regressors to model
-            for n, (regressor, regressor_name) in enumerate(
-                    zip(perfusion_regressors, perfusion_regressor_names)):
-                session_info['regress'].insert(
-                    n, {'val': regressor, 'name': regressor_name})
-            level1design.inputs.session_info = [session_info]
+            affines_file = os.path.splitext(self.inputs.in_file)[0] + '.mat'
+            savemat(affines_file, dict(mat=design_matrix))
+        # Add perfusion regressors to model
+        for n, (regressor, regressor_name) in enumerate(
+                zip(perfusion_regressors, perfusion_regressor_names)):
+            session_info['regress'].insert(
+                n, {'val': regressor, 'name': regressor_name})
 
-        level1design.run()
         return runtime
 
     def _make_matlab_command(self, content):

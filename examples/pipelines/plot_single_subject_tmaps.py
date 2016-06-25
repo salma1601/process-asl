@@ -68,7 +68,7 @@ if os.path.isfile(spm_mat):
 level1design = mem.cache(Level1Design)
 out_level1design = level1design(
     bases={'hrf': {'derivs': [0, 0]}},
-    perfusion_bases='bases',
+#    perfusion_bases='bases',
     timing_units='secs',
     interscan_interval=tr,
     model_serial_correlations='AR(1)',
@@ -85,7 +85,9 @@ out_level1estimate = level1estimate(
 # Specify contrasts
 cont01 = (conditions[0] + ' > ' + conditions[1], 'T', conditions, [1, -1, 0])
 cont02 = (conditions[2],   'T', conditions, [0, 0, 1])
+cont03 = ('other',   'T', [u'Sn(1) Realign1', u'Sn(1) Realign2'], [1, -1])
 contrast_list = [cont01, cont02]
+contrast_list = [cont03]
 
 # Estimate contrasts
 from nipype.interfaces.spm import EstimateContrast
@@ -94,14 +96,15 @@ out_conestimate = conestimate(
     spm_mat_file=out_level1estimate.outputs.spm_mat_file,
     beta_images=out_level1estimate.outputs.beta_images,
     residual_image=out_level1estimate.outputs.residual_image,
-    contrasts=contrast_list)
+    contrasts=contrast_list,
+    group_contrast=True)
 os.chdir(current_directory)
 
 # Plot t-maps
 from nilearn import plotting
 contrast_names = zip(*out_conestimate.inputs['contrasts'])[0]
 for contrast_name, t_image in zip(contrast_names,
-                                    out_conestimate.outputs.spmT_images):
+                                    [out_conestimate.outputs.spmT_images]):
     plotting.plot_stat_map(t_image, threshold=3., title=contrast_name,
                            bg_img=mean_func_file)
 plotting.show()
