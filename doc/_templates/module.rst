@@ -22,6 +22,18 @@
    {% block classes %}
    {% if classes %}
 
+   Classes
+   -------
+
+   .. autosummary::
+   {% for item in classes %}    
+      {{ item }}
+   {%- endfor %}
+   {% endif %}
+   {% endblock %}
+
+   {% block exceptions %}
+   {% if exceptions %}
 
    Exceptions
    ----------
