@@ -295,7 +295,6 @@ class InterfaceHelpWriter(object):
             ad += '\n.. _%s\n\n' % label
             ad += '\n.. index:: %s\n\n' % c
             ad += c + '\n' + self.rst_section_levels[2] * len(c) + '\n\n'
-            ad += "`Link to code <%s>`__\n\n" % get_file_url(classinst)
             ad += trim(classinst.help(returnhelp=True),
                        self.rst_section_levels[3]) + '\n'
 
@@ -306,7 +305,6 @@ class InterfaceHelpWriter(object):
             label = ':func:`' + name + '`'
             ad += '\n.. _%s:\n\n' % (uri + '.' + name)
             ad += '\n'.join((label, self.rst_section_levels[2] * len(label)))
-            ad += "\n\n`Link to code <%s>`__\n\n" % get_file_url(finst)
             helpstr = trim(finst.__doc__, self.rst_section_levels[3])
             ad += '\n\n' + helpstr + '\n\n'
 
@@ -325,7 +323,6 @@ class InterfaceHelpWriter(object):
             label = ':func:`' + name + '`'
             ad += '\n.. _%s:\n\n' % (uri + '.' + name)
             ad += '\n'.join((label, self.rst_section_levels[2] * len(label)))
-            ad += "\n\n`Link to code <%s>`__\n\n" % get_file_url(finst)
             helpstr = trim(finst.__doc__, self.rst_section_levels[3])
             ad += '\n\n' + helpstr + '\n\n'
 
