@@ -1,6 +1,6 @@
-============================
-Procasl API Reference
-============================
+===
+API
+===
 
 .. currentmodule:: procasl
 

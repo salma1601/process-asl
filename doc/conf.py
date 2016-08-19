@@ -14,6 +14,8 @@
 
 import sys
 import os
+import matplotlib as mpl
+mpl.use("Agg")
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -30,19 +32,26 @@ sys.path.insert(0, os.path.abspath('sphinxext'))
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-    'sphinx.ext.autosummary',
-    'sphinx.ext.doctest',
-    'sphinx.ext.intersphinx',
-#    'sphinx.ext.todo',
-#    'sphinx.ext.coverage',
-    'sphinx.ext.mathjax',
-    'numpydoc.numpydoc',
-#    'numpy_ext.numpydoc',
-    'IPython.sphinxext.ipython_directive',
-    'IPython.sphinxext.ipython_console_highlighting',
-    'sphinx_gallery.gen_gallery']
+              'sphinx.ext.autosummary',
+              'sphinx.ext.doctest',
+              'sphinx.ext.intersphinx',
+              #    'sphinx.ext.todo',
+              #    'sphinx.ext.coverage',
+              'sphinx.ext.mathjax',
+              'numpydoc.numpydoc',
+              #    'numpy_ext.numpydoc',
+              'IPython.sphinxext.ipython_directive',
+              'IPython.sphinxext.ipython_console_highlighting',
+              'sphinx_gallery.gen_gallery',
+              ]
 
 numpydoc_show_class_members = False
+
+# Include the example source for plots in API docs
+plot_include_source = True
+plot_formats = [("png", 90)]
+plot_html_show_formats = False
+plot_html_show_source_link = False
 
 autodoc_default_flags = ['members', 'inherited-members']
 
@@ -287,7 +296,7 @@ texinfo_documents = [
 sphinx_gallery_conf = {
     # Your documented modules. In this case sphinx_gallery and numpy
     # in a tuple of strings.
-    'doc_module': 'procasl', #('procasl', 'nipype', 'nilearn'),
+    'doc_module': 'procasl',  # ('procasl', 'nipype', 'nilearn'),
     'reference_url': {
         # The module you locally document uses a None
         'procasl': None,
@@ -302,8 +311,12 @@ sphinx_gallery_conf = {
     'examples_dirs': ['../examples', '../tutorials'],
     # path where to save gallery generated examples
     'gallery_dirs': ['auto_examples', 'tutorials'],
-
     # path to store the module using example template
-    #'mod_example_dir': 'modules/generated'
+    # 'mod_example_dir': 'modules/generated'
     }
 
+# Add the 'copybutton' javascript, to hide/show the prompt in code
+# examples, originally taken from scikit-learn's doc/conf.py
+def setup(app):
+    app.add_javascript('copybutton.js')
+    app.add_stylesheet('style.css')
