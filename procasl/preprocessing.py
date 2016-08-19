@@ -163,6 +163,14 @@ def apply_mask(in_file, mask_file, mask_value=np.nan, out_file=None):
     -------
     out_file : str
         Path to the masked image
+
+    Examples
+    --------
+
+    .. plot::
+       A plotting example:
+       >>> import matplotlib.pyplot as plt
+       >>> plt.plot([1,2,3], [4,5,6])
     """
     # Load images
     image = nibabel.load(in_file)
@@ -384,13 +392,24 @@ class ControlTagRealign(BaseInterface):
 
     Examples
     --------
-    from procasl import preprocessing
-    realign = preprocessing.Realign
-    realign.inputs.in_file = 'functional.nii'
-    realign.inputs.register_to_mean = False
-    realign.inputs.correct_tagging = True
-    out_realign = realign.run()
-    print(out_realign.realigned files, out_realign.realignement_parameters)
+
+    Basic BOLD realignement:
+
+    .. plot::
+        :context: close-figs
+
+        >>> from procasl import preprocessing
+        >>> realign = preprocessing.ControlTagRealign
+        >>> realign.inputs.in_file = '/tmp/functional.nii'
+        >>> realign.inputs.register_to_mean = False
+        >>> realign.inputs.correct_tagging = True
+        >>> out_realign = realign.run()
+        >>> print(out_realign.realigned files,
+                  out_realign.realignement_parameters)
+        >>> import numpy as np
+        >>> motion = np.loadtxt(out_realign.outputs.realignment_parameters)
+        >>> import matplotlib.pylab as plt
+        >>> plt.plot(motion)
     """
     input_spec = ControlTagRealignInputSpec
     output_spec = ControlTagRealignOutputSpec
@@ -399,7 +418,11 @@ class ControlTagRealign(BaseInterface):
         # Set the realignement options
         realign = spm.Realign()
         realign.inputs.paths = self.inputs.paths
-        realign.inputs.in_files = self.inputs.in_file
+        if self.inputs.realign_to_second_scan:
+            realign.inputs.in_files = self.inputs.in_file
+        else:
+            realign.inputs.in_files = self.inputs.in_file
+            
         realign.inputs.register_to_mean = self.inputs.register_to_mean
         realign.inputs.quality = 0.9
         realign.inputs.fwhm = 5.
@@ -481,6 +504,14 @@ class GetFirstScanOutputSpec(TraitedSpec):
 
 class GetFirstScan(BaseInterface):
     """Save the first scan from 4D image (M0).
+
+    Examples
+    --------
+
+    .. plot::
+       A plotting example:
+       >>> import matplotlib.pyplot as plt
+       >>> plt.plot([1,2,3], [4,5,6])
     """
     input_spec = GetFirstScanInputSpec
     output_spec = GetFirstScanOutputSpec

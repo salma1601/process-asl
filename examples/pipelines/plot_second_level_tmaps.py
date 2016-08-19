@@ -19,6 +19,7 @@ subjects_parent_directory = os.path.expanduser(
         '~/CODE/process-asl/procasl_cache/heroes')
 preprocessed_heroes = datasets.load_heroes_dataset(
     subjects_parent_directory=subjects_parent_directory,
+    subjects=(5, 6,),
     paths_patterns={'motion': 'nipype_mem/procasl*Realign/*/rp*vismot1*.txt',
                     'func ASL': 'nipype_mem/*Smooth/*/swrsc*vismot1*ASL*.nii',
                     'mean ASL': 'nipype_mem/*Smooth/*/swmean_rsc*vismot1*.nii'})
@@ -27,6 +28,7 @@ preprocessed_heroes = datasets.load_heroes_dataset(
 heroes = datasets.load_heroes_dataset(
     subjects_parent_directory=os.path.join(
         os.path.expanduser('~/procasl_data'), 'heroes'),
+    subjects=(5, 6,),
     paths_patterns={'paradigm': 'paradigms/acquisition1/*ASL*1b.csv'})
 
 #######################
